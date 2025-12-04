@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car List - Automotive Catalog</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a6fa5;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .categories-list {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .categories-list h2 {
+            color: #3498db;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+
+        .categories-list ul {
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .categories-list li {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .categories-list li:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .category-section {
+            background-color: white;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .category-section:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .category-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .category-title span {
+            color: #e74c3c;
+        }
+
+        .cars-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .car-item {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .car-item:hover {
+            background-color: #edf2f7;
+            transform: translateX(5px);
+        }
+
+        .car-name {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+
+        .no-cars {
+            color: #7f8c8d;
+            font-style: italic;
+            padding: 15px;
+            text-align: center;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: #ecf0f1;
+            margin: 30px 0;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .categories-list ul {
+                flex-direction: column;
+            }
+
+            .cars-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚗 Automotive Catalog</h1>
+        <p class="subtitle">Browse our collection of cars organized by categories</p>
+    </header>
+
+    <section class="categories-list">
+        <h2>Available Categories</h2>
+        <ul>
+            {% for category in categories %}
+                <li>{{ category.name }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <main>
+        <h2 style="color: #2c3e50; margin-bottom: 20px;">Cars by Category</h2>
+
+        {% for category in categories %}
+            <section class="category-section">
+                <h3 class="category-title">Category: <span>"{{ category.name }}"</span></h3>
+
+                {% if category.cars.all %}
+                    <div class="cars-container">
+                        {% for car in category.cars.all %}
+                            <div class="car-item">
+                                <p class="car-name">🚘 {{ car.name }}</p>
+                                {% if car.price %}
+                                    <p style="color: #27ae60; font-weight: 600; margin-top: 5px;">${{ car.price }}</p>
+                                {% endif %}
+                                {% if car.year %}
+                                    <p style="color: #7f8c8d; font-size: 0.9rem; margin-top: 5px;">Year: {{ car.year }}</p>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-cars">
+                        <p>No cars available in this category yet.</p>
+                    </div>
+                {% endif %}
+            </section>
+        {% endfor %}
+    </main>
+
+    <footer>
+        <p>Automotive Catalog &copy; 2023 | Total Categories: {{ categories|length }}</p>
+        <p style="margin-top: 5px;">Displaying cars from all available categories</p>
+    </footer>
+</body>
+</html>
