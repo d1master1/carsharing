@@ -55,7 +55,7 @@ ROOT_URLCONF = 'carsharing.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'cars/../cars/templates']
+        'DIRS': [BASE_DIR / 'cars/../cars/../.venv/templates']
         ,
         'APP_DIRS': True,
         'OPTIONS': {

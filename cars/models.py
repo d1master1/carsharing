@@ -2,7 +2,7 @@
 from django.db import models
 
 
-class CatCategory(models.Model):
+class CarCategory(models.Model):
     name = models.CharField(max_length=100)
 
     class Meta:
@@ -22,7 +22,7 @@ class Car(models.Model):
     is_available = models.BooleanField(default=True)
 
     category = models.ForeignKey(
-        CatCategory,
+        CarCategory,
         on_delete=models.CASCADE,
         related_name='cars',
         null=True,

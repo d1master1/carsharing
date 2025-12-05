@@ -1,6 +1,6 @@
 # B:\ИС-4\carsharing\cars\admin.py
 from django.contrib import admin
-from .models import Car, CatCategory, CarCharacteristics  # Исправлено: CarCategory -> CatCategory
+from .models import Car, CarCategory, CarCharacteristics  # Исправлено: CarCategory -> CarCategory
 
 class CarCharacteristicsInline(admin.TabularInline):
     model = CarCharacteristics
@@ -14,4 +14,4 @@ class CarAdmin(admin.ModelAdmin):
 
 # Регистрация моделей с кастомизацией для Car
 admin.site.register(Car, CarAdmin)
-admin.site.register(CatCategory)  # Исправлено: CarCategory -> CatCategory
+admin.site.register(CarCategory)  # Исправлено: CarCategory -> CarCategory
