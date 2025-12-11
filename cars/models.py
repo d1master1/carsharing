@@ -19,7 +19,6 @@ class Car(models.Model):
     price = models.CharField(max_length=50)
     color = models.CharField(max_length=100)
     year = models.PositiveIntegerField(blank=True, null=True)
-    # ДОБАВЛЕНО ПОЛЕ КАТЕГОРИИ ↓
     category = models.ForeignKey(
         CarCategory,
         on_delete=models.SET_NULL,
@@ -31,8 +30,7 @@ class Car(models.Model):
     image = models.ImageField(
         upload_to='cars/',
         blank=False,
-        null=True
-    )
+        null=True)
     is_available = models.BooleanField(default=True, verbose_name="Доступен")
 
     class Meta:
