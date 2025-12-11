@@ -19,18 +19,26 @@ class Car(models.Model):
     price = models.CharField(max_length=50)
     color = models.CharField(max_length=100)
     year = models.PositiveIntegerField(blank=True, null=True)
-    is_available = models.BooleanField(default=True)
-
+    # ДОБАВЛЕНО ПОЛЕ КАТЕГОРИИ ↓
     category = models.ForeignKey(
         CarCategory,
-        on_delete=models.CASCADE,
-        related_name='cars',
+        on_delete=models.SET_NULL,
         null=True,
-        blank=True
+        blank=True,
+        related_name="cars",
+        verbose_name="Категория"
     )
+    image = models.ImageField(
+        upload_to='cars/',
+        blank=False,
+        null=True
+    )
+    is_available = models.BooleanField(default=True, verbose_name="Доступен")
 
     class Meta:
         ordering = ['name']
+        verbose_name = "Автомобиль"
+        verbose_name_plural = "Автомобили"
 
     def __str__(self):
         if self.year:
@@ -39,12 +47,13 @@ class Car(models.Model):
 
 
 class CarCharacteristics(models.Model):
-    name = models.CharField(max_length=100)
-    value = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, verbose_name="Название")
+    value = models.CharField(max_length=100, verbose_name="Значение")
     car = models.ForeignKey(
         Car,
         on_delete=models.CASCADE,
-        related_name="characteristics"
+        related_name="characteristics",
+        verbose_name="Автомобиль"
     )
 
     class Meta:

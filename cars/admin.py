@@ -14,4 +14,4 @@ class CarAdmin(admin.ModelAdmin):
 
 # Регистрация моделей с кастомизацией для Car
 admin.site.register(Car, CarAdmin)
-admin.site.register(CarCategory)  # Исправлено: CarCategory -> CarCategory
+admin.site.register(CarCategory)
