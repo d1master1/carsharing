@@ -1,297 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Car List - Automotive Catalog</title>
+    <title>Автомобильный каталог</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: system-ui, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px solid #eee; }
+        h1 { font-size: 2rem; margin-bottom: 8px; }
+        .subtitle { color: #666; margin-bottom: 20px; }
+        .nav-links { display: flex; justify-content: center; gap: 20px; margin-top: 15px; }
+        .nav-links a { color: #0066cc; text-decoration: none; }
 
-        body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+        .categories-list { margin-bottom: 40px; }
+        .categories-list ul { display: flex; flex-wrap: wrap; gap: 10px; list-style: none; justify-content: center; }
+        .categories-list li { background: #f5f5f5; padding: 6px 12px; border-radius: 4px; }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #4a6fa5;
-        }
+        .category-section { margin-bottom: 40px; }
+        .category-title { font-size: 1.3rem; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #eee; }
+        .category-title span { color: #0066cc; }
 
-        h1 {
-            color: #2c3e50;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-        }
+        .cars-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .car-card { border: 1px solid #eee; border-radius: 8px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; }
+        .car-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .car-image-container { height: 160px; background: #f9f9f9; display: flex; align-items: center; justify-content: center; }
+        .car-image { width: 100%; height: 100%; object-fit: cover; }
+        .no-image { color: #999; padding: 20px; }
+        .car-info { padding: 15px; }
+        .car-name { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .car-price { color: #2ecc71; font-weight: bold; margin-bottom: 10px; }
+        .car-details { display: flex; gap: 15px; color: #666; font-size: 0.9rem; margin-bottom: 10px; }
+        .car-description { color: #666; font-size: 0.9rem; margin-top: 10px; line-height: 1.4; }
+        .read-more { display: inline-block; margin-top: 12px; color: #0066cc; text-decoration: none; font-size: 0.9rem; }
+        .read-more:hover { text-decoration: underline; }
 
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
+        .no-cars { text-align: center; color: #999; padding: 30px; background: #f9f9f9; border-radius: 8px; }
 
-        .nav-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 15px;
-        }
+        /* Модальное окно с детальной информацией */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: white; margin: 5% auto; padding: 0; width: 90%; max-width: 800px; border-radius: 8px; overflow: hidden; }
+        .modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .modal-header h3 { margin: 0; font-size: 1.5rem; }
+        .close { font-size: 28px; cursor: pointer; color: #999; }
+        .close:hover { color: #333; }
+        .modal-body { padding: 20px; }
+        .modal-image { width: 100%; height: 300px; object-fit: cover; margin-bottom: 20px; border-radius: 4px; }
+        .modal-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0; }
+        .detail-item { padding: 12px; background: #f9f9f9; border-radius: 4px; }
+        .detail-label { font-size: 0.85rem; color: #666; margin-bottom: 4px; }
+        .detail-value { font-weight: 500; }
+        .full-description { line-height: 1.6; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; }
 
-        .nav-links a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-links a:hover {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .categories-list {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .categories-list h2 {
-            color: #3498db;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .categories-list ul {
-            list-style-type: none;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .categories-list li {
-            background-color: #3498db;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-        }
-
-        .categories-list li:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-        }
-
-        .category-section {
-            background-color: white;
-            border-radius: 8px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .category-section:hover {
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-            transform: translateY(-3px);
-        }
-
-        .category-title {
-            color: #2c3e50;
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #ecf0f1;
-        }
-
-        .category-title span {
-            color: #e74c3c;
-        }
-
-        .cars-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 25px;
-            margin-top: 20px;
-        }
-
-        .car-card {
-            background-color: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            border: 1px solid #e1e8ed;
-        }
-
-        .car-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-        }
-
-        .car-image-container {
-            width: 100%;
-            height: 180px;
-            overflow: hidden;
-            background-color: #f8f9fa;
-        }
-
-        .car-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .car-card:hover .car-image {
-            transform: scale(1.05);
-        }
-
-        .no-image {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #e9ecef;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .car-info {
-            padding: 15px;
-        }
-
-        .car-name {
-            font-weight: 600;
-            color: #2c3e50;
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-        }
-
-        .car-price {
-            color: #27ae60;
-            font-weight: 700;
-            font-size: 1.3rem;
-            margin-bottom: 5px;
-        }
-
-        .car-details {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .car-year, .car-color {
-            background-color: #f1f8ff;
-            padding: 3px 8px;
-            border-radius: 4px;
-        }
-
-        .no-cars {
-            color: #7f8c8d;
-            font-style: italic;
-            padding: 30px;
-            text-align: center;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            border: 1px dashed #dee2e6;
-        }
-
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #ddd;
-            color: #7f8c8d;
-            font-size: 0.9rem;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            background-color: white;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #3498db;
-        }
-
-        .stat-label {
-            font-size: 0.8rem;
-            color: #7f8c8d;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 15px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .categories-list ul {
-                flex-direction: column;
-            }
-
-            .cars-container {
-                grid-template-columns: 1fr;
-                gap: 15px;
-            }
-
-            .nav-links {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
+        footer { margin-top: 50px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; }
+        .stats { display: flex; justify-content: center; gap: 40px; margin: 20px 0; }
+        .stat-number { font-size: 1.8rem; font-weight: bold; color: #333; }
+        .stat-label { font-size: 0.9rem; color: #666; margin-top: 5px; }
     </style>
 </head>
 <body>
     <header>
-        <h1>🚗 Автомобильный каталог</h1>
-        <p class="subtitle">Ознакомьтесь с нашей коллекцией автомобилей, разделённых по категориям</p>
+        <h1>Автомобильный каталог</h1>
+        <p class="subtitle">Коллекция автомобилей по категориям</p>
         <div class="nav-links">
-            <a href="/admin/">Страница admin</a>
-            <a href="/">Страница home</a>
-            <a href="/about">Страница about</a>
+            <a href="/admin/">Админка</a>
+            <a href="/">Главная</a>
+            <a href="/about">О нас</a>
         </div>
     </header>
 
     <section class="categories-list">
-        <h2>Доступные категории</h2>
+        <h2>Категории</h2>
         <ul>
             {% for category in categories %}
                 <li>{{ category.name }}</li>
@@ -300,7 +79,7 @@
     </section>
 
     <main>
-        <h2 style="color: #2c3e50; margin-bottom: 20px;">Автомобили по категориям</h2>
+        <h2>Автомобили по категориям</h2>
 
         {% for category in categories %}
             <section class="category-section">
@@ -309,14 +88,12 @@
                 {% if category.cars.all %}
                     <div class="cars-container">
                         {% for car in category.cars.all %}
-                            <div class="car-card">
+                            <div class="car-card" id="car-{{ car.id }}">
                                 <div class="car-image-container">
                                     {% if car.image %}
                                         <img src="{{ car.image.url }}" alt="{{ car.name }}" class="car-image">
                                     {% else %}
-                                        <div class="no-image">
-                                            🚗 Изображение отсутствует
-                                        </div>
+                                        <div class="no-image">Нет изображения</div>
                                     {% endif %}
                                 </div>
                                 <div class="car-info">
@@ -326,33 +103,50 @@
                                     {% endif %}
                                     <div class="car-details">
                                         {% if car.year %}
-                                            <span class="car-year">Год: {{ car.year }}</span>
+                                            <span>Год: {{ car.year }}</span>
                                         {% endif %}
                                         {% if car.color %}
-                                            <span class="car-color">Цвет: {{ car.color }}</span>
+                                            <span>Цвет: {{ car.color }}</span>
                                         {% endif %}
                                     </div>
                                     {% if car.description %}
-                                        <p style="color: #5d6d7e; font-size: 0.9rem; margin-top: 10px; line-height: 1.4;">
+                                        <p class="car-description">
                                             {{ car.description|truncatechars:100 }}
                                         </p>
                                     {% endif %}
+                                    <a href="#" class="read-more" onclick="showCarDetails({{ car.id }})">Читать подробнее</a>
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
                 {% else %}
                     <div class="no-cars">
-                        <p>В этой категории пока нет доступных автомобилей.</p>
+                        <p>В этой категории нет автомобилей</p>
                     </div>
                 {% endif %}
             </section>
         {% endfor %}
     </main>
 
-    <footer>
-        <p>Автомобильный каталог &copy; 2025 | Всего категорий: {{ categories|length }}</p>
+    <!-- Модальное окно с детальной информацией -->
+    <div id="carModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalCarName"></h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <img id="modalCarImage" src="" alt="" class="modal-image">
+                <div id="modalCarDetails" class="modal-details">
+                    <!-- Детали будут добавлены через JavaScript -->
+                </div>
+                <div id="modalCarFullDescription" class="full-description"></div>
+            </div>
+        </div>
+    </div>
 
+    <footer>
+        <p>Автомобильный каталог &copy; 2025</p>
         <div class="stats">
             <div class="stat-item">
                 <div class="stat-number">{{ categories|length }}</div>
@@ -360,32 +154,156 @@
             </div>
             <div class="stat-item">
                 <div class="stat-number">
-                    {% with total_cars=0 %}
+                    {% with total=0 %}
                         {% for category in categories %}
-                            {{ category.cars.all.count|add:total_cars }}
+                            {% for car in category.cars.all %}
+                                {% with total=total|add:1 %}{% endwith %}
+                            {% endfor %}
                         {% endfor %}
                     {% endwith %}
                 </div>
                 <div class="stat-label">Автомобилей</div>
             </div>
-            <div class="stat-item">
-                <div class="stat-number">
-                    {% with avg_price=0 count=0 %}
-                        {% for category in categories %}
-                            {% for car in category.cars.all %}
-                                {% if car.price %}
-                                    {{ car.price|add:avg_price }}
-                                    {{ count|add:1 }}
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}
-                    {% endwith %}
-                </div>
-                <div class="stat-label">Средняя цена</div>
-            </div>
         </div>
-
-        <p style="margin-top: 20px;">Отображение автомобилей из всех доступных категорий</p>
+        <p style="margin-top: 20px; font-size: 0.9rem;">Все доступные автомобили</p>
     </footer>
+
+    <script>
+        // Данные автомобилей (в реальном проекте будут приходить с сервера)
+        const carData = {
+            {% for category in categories %}
+                {% for car in category.cars.all %}
+                    {{ car.id }}: {
+                        name: "{{ car.name }}",
+                        image: "{% if car.image %}{{ car.image.url }}{% endif %}",
+                        price: {{ car.price|default:"0" }},
+                        year: {{ car.year|default:"0" }},
+                        color: "{{ car.color|default:'Не указан' }}",
+                        category: "{{ category.name }}",
+                        description: `{{ car.description|default:"Описание отсутствует"|escapejs }}`,
+                        // Дополнительные поля для детальной информации
+                        engine: "{{ car.engine|default:'2.0L' }}",
+                        transmission: "{{ car.transmission|default:'Автоматическая' }}",
+                        fuel: "{{ car.fuel|default:'Бензин' }}",
+                        mileage: {{ car.mileage|default:"0" }},
+                        power: {{ car.power|default:"150" }},
+                        seats: {{ car.seats|default:"5" }},
+                        doors: {{ car.doors|default:"4" }},
+                        drive: "{{ car.drive|default:'Передний' }}",
+                        condition: "{{ car.condition|default:'Новый' }}"
+                    },
+                {% endfor %}
+            {% endfor %}
+        };
+
+        function showCarDetails(carId) {
+            const car = carData[carId];
+            if (!car) return;
+
+            const modal = document.getElementById('carModal');
+            const modalName = document.getElementById('modalCarName');
+            const modalImage = document.getElementById('modalCarImage');
+            const modalDetails = document.getElementById('modalCarDetails');
+            const modalDescription = document.getElementById('modalCarFullDescription');
+
+            // Заполняем заголовок
+            modalName.textContent = car.name;
+
+            // Заполняем изображение
+            if (car.image) {
+                modalImage.src = car.image;
+                modalImage.style.display = 'block';
+            } else {
+                modalImage.style.display = 'none';
+            }
+
+            // Заполняем детали
+            modalDetails.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Цена</div>
+                    <div class="detail-value">$${car.price.toLocaleString()}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Год выпуска</div>
+                    <div class="detail-value">${car.year}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Цвет</div>
+                    <div class="detail-value">${car.color}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Категория</div>
+                    <div class="detail-value">${car.category}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Двигатель</div>
+                    <div class="detail-value">${car.engine}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Мощность</div>
+                    <div class="detail-value">${car.power} л.с.</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Коробка передач</div>
+                    <div class="detail-value">${car.transmission}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Привод</div>
+                    <div class="detail-value">${car.drive}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Тип топлива</div>
+                    <div class="detail-value">${car.fuel}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Пробег</div>
+                    <div class="detail-value">${car.mileage.toLocaleString()} км</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Количество дверей</div>
+                    <div class="detail-value">${car.doors}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Количество мест</div>
+                    <div class="detail-value">${car.seats}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Состояние</div>
+                    <div class="detail-value">${car.condition}</div>
+                </div>
+            `;
+
+            // Заполняем полное описание
+            modalDescription.innerHTML = `
+                <h4>Полное описание</h4>
+                <p>${car.description}</p>
+            `;
+
+            // Показываем модальное окно
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('carModal');
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // Закрытие модального окна при клике вне его
+        window.onclick = function(event) {
+            const modal = document.getElementById('carModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Закрытие модального окна по клавише ESC
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
