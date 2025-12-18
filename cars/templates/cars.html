@@ -1,9 +1,11 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Автомобильный каталог</title>
+    <link rel="stylesheet" href="{% static '/style.css' %}">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: system-ui, sans-serif; line-height: 1.6; color: #333; max-width: 1200px; margin: 0 auto; padding: 20px; }
@@ -66,6 +68,7 @@
             <a href="/admin/">Админка</a>
             <a href="/">Главная</a>
             <a href="/about">О нас</a>
+            <a class="logout" href="{% url 'logout' %}">Выйти из аккаунта</a>
         </div>
     </header>
 
